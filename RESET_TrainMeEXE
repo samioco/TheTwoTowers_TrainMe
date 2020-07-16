@@ -1,0 +1,78 @@
+#CLASS 0
+#AL TrainMe {#VAR QuestName {"TrainMe"} {} VAR
+ActionAdd "QuestComplete TrainMe"
+ActionAdd "TrainMe_EXE"
+ActionAdd "TrainMe_Check_EXE verbose;ActionNext"
+gnp;ActionNext
+} Tools|TrainMe|EXE
+
+#AL TrainMe_GetGold {#IF ((@TrainMe_CanTrain) AND (@MyGold<@TrainMe_GoldNeeded)) {
+    ActionAdd  %concat("withdraw ",@TrainMe_GoldNeeded,";gold;ActionNext")
+    ActionAdd "gnb;ActionNext"
+    #IF ((@MyFaction=FR) AND (@Mystat_cap<=45)) {ActionAdd "#WALK hobb;ActionNext"}
+}
+ActionNext
+} Tools|TrainMe|EXE
+
+
+#AL TrainMe_EXE {
+//TrainMe_EXE:
+//Called by: TrainMe
+//Assumes: TrainMe_Check_EXE
+
+//If TrainMe_Calculate stored action items in the @TrainMe_Stack,
+//then TrainMe_EXE will pop each item off into the @ActionQueue for
+//in-game execution
+
+//This script performs a check of profile variables in order to determine
+//whether the character can level up and/or train stats
+
+//If stats are trainable, exact executable commands will be determined
+//and stored in a variable stack called: @TrainMe_Stack
+//which can be called by TrainMe_EXE
+
+//#VAR TrainMe_CanLevel {0} {} VAR
+//#VAR TrainMe_CanTrain {1} {} VAR
+
+//Initialize variables
+//ActionAdd "QuestComplete TrainMe"
+
+//Load the TrainMe_Stack
+//Prioritize Only LevelUp, then TrainStats
+
+//@TrainMe_Stack will have 1 of 2 contents:
+//1. <empty>
+//2. Two item list: $trainer|$action
+//$action: either <spar/advance/study> or <train stat>
+
+#SW (@TrainMe_CanLevel) {
+  //Preload Action Stack to test for stat training after levelup
+  //ActionAdd "TrainMe_EXE"
+  //ActionAdd "TrainMe_Check_EXE;ActionNext"
+
+  //If CanLevel, Stack TrainMe_EXE with a forced value of {0}
+  //This allows CanTrain to execute if CanLevel failed due to false positive
+  ActionAdd "#VAR TrainMe_CanLevel {0} {} VAR;TrainMe_EXE"
+  TrainMe_Stack_LevelUp
+  //Pop off @TrainMe_Stack items into @ActionQueue
+  TrainMe_Stack_Unload
+//Preload ActionQueue with TrainMe to do a full canlevel/cantrain check
+//Only allow a full TrainMe call if stats are trained (allowing higher avg stats)
+} (@TrainMe_CanTrain) {
+  ActionAdd "TrainMe"
+  TrainMe_Stats
+  //Pop off @TrainMe_Stack items into @ActionQueue
+  TrainMe_Stack_Unload
+  //If gold is needed, visit bank & withdraw
+  ActionAdd "TrainMe_GetGold"
+}
+
+//If Savareth training is required, add bucket quest before getting gold, to top of stack
+TrainMe_SavarethBucket
+
+//Initiate action Queue!
+ActionAdd "QuestOn TrainMe;ActionNext"
+ActionNext
+} Tools|TrainMe|EXE
+
+#CLASS 0
