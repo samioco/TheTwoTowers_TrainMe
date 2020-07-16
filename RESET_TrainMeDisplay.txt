@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeDisplay#CLASS 0#AL RESET_TrainMeDisplay {#CLASS 0
 $line_length=40
 $CLASS = "Tools|TrainMe|EXE"
 #AL ShowLevels {
@@ -64,4 +64,4 @@ SysMsg TrainMe_Stack:
 #FORALL @TrainMe_Stack {SysMsg %i}
 } $CLASS
 
-#CLASS 0
+#CLASS 0} _TrainMe#CLASS 0

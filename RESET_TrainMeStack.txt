@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeStack#CLASS 0#AL RESET_TrainMeStack {#CLASS 0
 #AL TrainMe_Stack_LevelUp {
 //If CanLevel, Queue TrainMe to run/calculate again after Level-Up
 //There is a chance the character can advance more than 1 level
@@ -33,12 +33,12 @@ $action=advance;$trainer=""
   } ((@MyFaction=FR) AND (@Mystat_cap>45)) {$trainer=saru;$action=advance
   } ((@MyFaction=ER) AND (@Mystat_cap<=45)) {$trainer=rabban;$action=advance
   } ((@MyFaction=ER) AND (@Mystat_cap>45)) {$trainer=osgtrain;$action=advance
-  }
-
+  } 
+  
   //#VAR GrinderLevelUp_Trainer {$trainer} {} VAR
-  //#VAR GrinderLevelUp_Action {$action} {} VAR
+  //#VAR GrinderLevelUp_Action {$action} {} VAR  
   #ADDI TrainMe_Trainer_List $trainer
-
+  
   $string = %concat($trainer,"|",$action,";score")
   #VAR TrainMe_Stack {} {} VAR
   //#ADDI TrainMe_Stack "TrainMe"
@@ -52,7 +52,7 @@ $action=advance;$trainer=""
 $stack_item="";$trainer="";$action="";$Actionexe=""
 
 //Grab last/top item off of stack
-//Add them into the @ActionQueue (in reverse reverse (forward) order,
+//Add them into the @ActionQueue (in reverse reverse (forward) order, 
 //to preserve priority, when they are popped off of the @ActionQueue)
 #LOOP %numitems(@TrainMe_Stack),1 {
   //Each item is a list of 2 items
@@ -64,10 +64,10 @@ $stack_item="";$trainer="";$action="";$Actionexe=""
   //$action=%item(%item(@TrainMe_Stack,%numitems(@TrainMe_Stack)),2)
   #ADDI TrainMe_TrainerList $trainer
 
-
+  
   //Prep Trainer Positioning for Rabban Well
   #IF ($trainer="rabban") {ActionAdd "MoveMe_From_Rabban"}
-
+  
   //While at trainer, unload all stack items requiring this trainer
   //For each Stack item, check if item1 (trainer) is rabban
   //If match, add item2 (the action) into @ActionQueue and delete it from stack
@@ -88,14 +88,14 @@ $stack_item="";$trainer="";$action="";$Actionexe=""
 //#IF (($action) AND ($trainer)) {ActionAdd %concat("#WALK ",$trainer,";",$action,";ActionNext")}
 
 //If $trainer="rabban" then add to_Rabban positioning to top of Action stack
-//#IF ($trainer="rabban") {ActionAdd "TrainMe_MoveTo_Rabban"}
+//#IF ($trainer="rabban") {ActionAdd "TrainMe_MoveTo_Rabban"}  
   #IF ($trainer="rabban") {ActionAdd "MoveMe_To_Rabban"}
 
 //Grid Zone Positioning
   #SW (%ismember($trainer,"dawyin|savareth|radagast|saru|treebeard|osgtrain|edoarch|edorider|corthief|outstable|kadthief|kadass|treebeard")) {
     ActionAdd "MoveMe_To_Arda"
   } (%ismember($trainer,"rabban|tavtrain|tarauc")) {ActionAdd "MoveMe_To_FH"}
-//Grid Positioning Bug? action list can only accomodate unique actions.
+//Grid Positioning Bug? action list can only accomodate unique actions. 
 //Multiple trainers requiring multiple grid moves of same type may cause errors
 
 //Remove last/top item from stack
@@ -108,3 +108,4 @@ $stack_item="";$trainer="";$action="";$Actionexe=""
 } Tools|TrainMe|EXE
 
 #CLASS 0
+} _TrainMe#CLASS 0

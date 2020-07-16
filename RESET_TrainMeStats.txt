@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeStats#CLASS 0#AL RESET_TrainMeStats {#CLASS 0
 #AL TrainMe_Stats {
 //TrainMe_INIT
 //#VAR TrainMe_UsableGold {%number(10000)} {} VAR
@@ -19,7 +19,7 @@ $stat="";$display="";$verbose=%0;#IF (%0="verbose") {$verbose=%number(1)} {$verb
 $verbose = %number(%0)
 #VAR TrainMe_TrainCount {0} {} VAR
 #VAR TrainMe_TrainCost {0} {} VAR
-#IF ((%number(@TrainMe_StatValue)<%number(@TrainMe_StatCap)) AND (%number(@TrainMe_UsableGold)>%number(@TrainMe_StatCost))) {
+#IF ((%number(@TrainMe_StatValue)<%number(@TrainMe_StatCap)) AND (%number(@TrainMe_UsableGold)>%number(@TrainMe_StatCost))) {  
   TrainMe_Stats_CalculateStatCost @TrainMe_StatValue
   TrainMe_Stats_AssignTrainer
   TrainMe_Stats_VerboseDisplay $verbose
@@ -80,7 +80,7 @@ $display=%concat("StatToTrain: ",@TrainMe_TrainCount," ",@TrainMe_StatToTrain,",
 $trainme_count = %number(0);$trainme_action=""
 #VAR TrainMe_Action {} {} VAR
 #IF (@TrainMe_TrainCount>0) {
-  //Split train strings into sets of 10.
+  //Split train strings into sets of 10. 
   //i.e. '22train strength' becomes '10train strength,10train strength,2train strength'
   #WHILE (@TrainMe_TrainCount>10) {
     #ADD TrainMe_TrainCount -10
@@ -175,3 +175,5 @@ $stat = %number(%0)
 } Tools|TrainMe|EXE
 
 #CLASS 0
+
+} _TrainMe#CLASS 0

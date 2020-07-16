@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeSettings#CLASS 0#AL RESET_TrainMeSettings {#CLASS 0
 #VAR TrainMe_StatCap {%number(@Mystat_cap)} {} VAR
 #VAR TrainMe_UsableGold {%number(@MyUsableGold)} {} VAR
 //#VAR TrainMe_UsableGold {%number(10000)} {} VAR
@@ -95,4 +95,4 @@
 
 #TR {~[ You have completed a quest:%s*%s~]} {QuestOff TrainMe} Tools|TrainMe|Settings
 
-#CLASS 0
+#CLASS 0} _TrainMe#CLASS 0

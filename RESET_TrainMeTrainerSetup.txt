@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeTrainerSetup#CLASS 0#AL RESET_TrainMeTrainerSetup {#CLASS 0
 #AL TrainMe_MoveTo_Rabban {QuestOn TrainMe
 SysMsg Executing: TrainMe_MoveTo_Rabban
 ActionAdd "#WALK rabban;ActionNext"
@@ -29,4 +29,4 @@ ActionAdd "MoveMe_To_Loth"}
 //#TR {There's someone climbing up the rope!}
 #TR {climbs out of the well.} {#IF (%ismember(%roomid,"tarwell|tarwell_top")) {climb down}} Tools|TrainMe|Settings
 
-#CLASS 0
+#CLASS 0} _TrainMe#CLASS 0

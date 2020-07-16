@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeINIT#CLASS 0#AL RESET_TrainMeINIT {#CLASS 0
 #AL TrainMe_INIT {
 MyProfileVars
 #VAR TrainMe_StatCap {%number(@Mystat_cap)} {} VAR
@@ -64,4 +64,4 @@ MyProfileVars
 #ADDI Level_Requirements "25|105|11390625"
 } Tools|TrainMe|EXE
 TrainMe_INIT
-#CLASS 0
+#CLASS 0} _TrainMe#CLASS 0

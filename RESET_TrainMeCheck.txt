@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeCheck#CLASS 0#AL RESET_TrainMeCheck {#CLASS 0
 #AL TrainMe_Check {
 TrainMe_Check_EXE %0
 #IF ((@TrainMe_CanLevel) OR (@TrainMe_CanTrain)) {QuesterCheck TrainMe 1 100}
@@ -25,4 +25,4 @@ $result_display=""
 } Tools|TrainMe|EXE
 
 
-#CLASS 0
+#CLASS 0} _TrainMe#CLASS 0

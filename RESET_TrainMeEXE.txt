@@ -1,4 +1,4 @@
-#CLASS 0
+//RESET_TrainMeEXE#CLASS 0#AL RESET_TrainMeEXE {#CLASS 0
 #AL TrainMe {#VAR QuestName {"TrainMe"} {} VAR
 ActionAdd "QuestComplete TrainMe"
 ActionAdd "TrainMe_EXE"
@@ -16,7 +16,7 @@ ActionNext
 
 
 #AL TrainMe_EXE {
-//TrainMe_EXE:
+//TrainMe_EXE: 
 //Called by: TrainMe
 //Assumes: TrainMe_Check_EXE
 
@@ -49,7 +49,7 @@ ActionNext
   //Preload Action Stack to test for stat training after levelup
   //ActionAdd "TrainMe_EXE"
   //ActionAdd "TrainMe_Check_EXE;ActionNext"
-
+  
   //If CanLevel, Stack TrainMe_EXE with a forced value of {0}
   //This allows CanTrain to execute if CanLevel failed due to false positive
   ActionAdd "#VAR TrainMe_CanLevel {0} {} VAR;TrainMe_EXE"
@@ -58,7 +58,7 @@ ActionNext
   TrainMe_Stack_Unload
 //Preload ActionQueue with TrainMe to do a full canlevel/cantrain check
 //Only allow a full TrainMe call if stats are trained (allowing higher avg stats)
-} (@TrainMe_CanTrain) {
+} (@TrainMe_CanTrain) {  
   ActionAdd "TrainMe"
   TrainMe_Stats
   //Pop off @TrainMe_Stack items into @ActionQueue
@@ -76,3 +76,5 @@ ActionNext
 } Tools|TrainMe|EXE
 
 #CLASS 0
+
+} _TrainMe#CLASS 0
