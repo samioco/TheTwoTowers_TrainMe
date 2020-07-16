@@ -1,0 +1,67 @@
+#CLASS 0
+$line_length=40
+$CLASS = "Tools|TrainMe|EXE"
+#AL ShowLevels {
+$spacing=0
+$display=""
+#MATH $spacing %number(($line_length-%len("Level Requirements"))/2)
+#LOOP $spacing {$display=%concat($display," ")}
+#CR
+$display=%concat($display,"Level Requirements")
+#LOOP $spacing {$display=%concat($display," ")}
+ShowLine $line_length
+ShowLine $line_length
+#ECHO $display
+ShowLine $line_length
+$display="Level"
+#LOOP %len($display),8 {$display=%concat($display," ")}
+$display=%concat($display,"Avg Stats")
+#LOOP %len($display),25 {$display=%concat($display," ")}
+$display=%concat($display,"Experience")
+#ECHO $display
+ShowLine $line_length
+#FORALL @Level_Requirements {
+  $display=%item(%i,1)
+  #LOOP %len($display),8 {$display=%concat($display," ")}
+  $display=%concat($display,%item(%i,2))
+  #LOOP %len($display),25 {$display=%concat($display," ")}
+  $display=%concat($display,%item(%i,3))
+  #ECHO $display
+}
+ShowLine $line_length
+ShowLine $line_length
+} $CLASS
+
+#AL TrainMe_Display_Header {
+$dashx10=""
+#LOOP 10 {$dashx10 = %concat($dashx10,"-")}
+$spacex10=""
+#LOOP 10 {$spacex10 = %concat($spacex10," ")}
+$dashx80 = ""
+#LOOP 8 {$dashx80 = %concat($dashx80,$dashx10)}
+$display = %concat($dashx10,$spacex10,"TrainMe",$spacex10)
+#LOOP %len($display)+1,80 {$display=%concat($display,"-")}
+SysMsg $dashx80
+SysMsg $display
+SysMsg $dashx80
+} $CLASS
+
+
+#AL TrainMe_Display_Results {
+$dashx10=""
+#LOOP 10 {$dashx10 = %concat($dashx10,"-")}
+$dashx80 = ""
+#LOOP 8 {$dashx80 = %concat($dashx80,$dashx10)}
+SysMsg $dashx80
+SysMsg TrainMe_Stack Results:
+#FORALL @TrainMe_Stack {#ECHO %item(%i,1):%item(%i,2)}
+SysMsg CanLevel: @TrainMe_CanLevel, CanTrain: @TrainMe_CanTrain
+SysMsg $dashx80
+} $CLASS
+
+#AL TrainMe_Display_Stack {
+SysMsg TrainMe_Stack:
+#FORALL @TrainMe_Stack {SysMsg %i}
+} $CLASS
+
+#CLASS 0
