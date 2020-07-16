@@ -1,0 +1,28 @@
+#CLASS 0
+#AL TrainMe_Check {
+TrainMe_Check_EXE %0
+#IF ((@TrainMe_CanLevel) OR (@TrainMe_CanTrain)) {QuesterCheck TrainMe 1 100}
+} Tools|TrainMe|EXE
+
+
+#AL TrainMe_Check_EXE {TrainMe_INIT
+#IF (%0="verbose") {SysMsg {  };TrainMe_Display_Header}
+TrainMe_Check_LevelUp
+TrainMe_Stats %0
+#IF (%0="verbose") {TrainMe_Display_Results}
+$result_display=""
+#IF ((@TrainMe_CanLevel) OR (@TrainMe_CanTrain)) {$result_display = "TrainMe_Check: Training needed."} {$result_display = "TrainMe_Check: No training needed."}
+#IF (%0="verbose") {SysMsg $result_display}
+#IF (%0="verbose") {TrainMe_Display_Header}
+#IF (%0="verbose") {SysMsg {  }}
+} Tools|TrainMe|EXE
+
+
+#AL TrainMe_Check_LevelUp {
+#VAR TrainMe_NextLevel_AvgStats {%item(%item(@Level_Requirements,@MyLevel+1),2)} {} VAR
+#VAR TrainMe_NextLevel_Exp {%item(%item(@Level_Requirements,@MyLevel+1),3)} {} VAR
+#IF ((@MyExp>@TrainMe_NextLevel_Exp) AND (@MyAverageStats>=@TrainMe_NextLevel_AvgStats)) {#VAR TrainMe_CanLevel {1} {} VAR}
+} Tools|TrainMe|EXE
+
+
+#CLASS 0
