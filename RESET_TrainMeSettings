@@ -1,0 +1,98 @@
+#CLASS 0
+#VAR TrainMe_StatCap {%number(@Mystat_cap)} {} VAR
+#VAR TrainMe_UsableGold {%number(@MyUsableGold)} {} VAR
+//#VAR TrainMe_UsableGold {%number(10000)} {} VAR
+#VAR TrainMe_Stack {} {} VAR
+#VAR TrainMe_Trainer_List {} {} VAR
+#VAR TrainMe_TrainerList {} {} VAR
+#VAR TrainMe_StatToTrain {} {} VAR
+#VAR TrainMe_CanLevel {} {} VAR
+#VAR TrainMe_CanTrain {} {} VAR
+#VAR TrainMe_NextLevel_Exp {} {} VAR
+#VAR TrainMe_NextLevel_AvgStats {} {} VAR
+#VAR TrainMe_GoldNeeded {} {} VAR
+#VAR TrainMe_Savareth_bucket {} {} VAR
+#VAR TrainMe_StatValue {} {} VAR
+#VAR TrainMe_CostTotal {} {} VAR
+#VAR TrainMe_Trainer {} {} VAR
+#VAR TrainMe_Action {} {} VAR
+#VAR TrainMe_TrainCount {} {} VAR
+#VAR TrainMe_TrainCost {} {} VAR
+#VAR TrainMe_TrainableStats {"agility|constitution|coordination|strength|charisma|tactics|defense|blocking|battle instincts|intelligence|awareness|riding"} {} VAR
+
+#VAR TrainMe_Trainers {} {} VAR
+#ADDI TrainMe_Trainers "rabban"|"strength|agility|coordination|constitution|defense|attack|aim|dodge|lethal precision|deception|assassination"
+#ADDI TrainMe_Trainers "tarauc"|"charisma|intelligence"
+#ADDI TrainMe_Trainers "tavtrain"|"strength|constitution|tactics|blocking|battle instincts|combat arms"
+#ADDI TrainMe_Trainers "savareth"|"strength|constitution|coordination|tactics|blocking|battle instincts|combat arms"
+#ADDI TrainMe_Trainers "dawyin"|"agility|intelligence"
+#ADDI TrainMe_Trainers "scalus"|"strength|constitution"
+#ADDI TrainMe_Trainers "batlin"|"agility|coordination|nimbleness|stealth|lockpicking|theft"
+#ADDI TrainMe_Trainers "aravir"|"charisma"
+#ADDI TrainMe_Trainers "rivtrain"|"intelligence"
+#ADDI TrainMe_Trainers "saru"|"intelligence|charisma|nimbleness"
+#ADDI TrainMe_Trainers "radagast"|"charisma|intelligence|awareness|nature's lore|resist magic|riding|dodge|wilderness|intuition|concentration"
+#ADDI TrainMe_Trainers "treebeard"|"charisma|defense"
+
+#VAR Experience_Requirements {"0|500|1522|2283|3425|5138|7707|11561|17341|26012|39018|58527|87791|131687|197530|296296|444444|666666|1000000|1500000|2250000|3375000|5062500|7593750|11390625"} {} VAR
+
+#VAR Level_Requirements {} {} VAR
+#ADDI Level_Requirements "1|20|0"
+#ADDI Level_Requirements "2|20|500"
+#ADDI Level_Requirements "3|25|1522"
+#ADDI Level_Requirements "4|30|2283"
+#ADDI Level_Requirements "5|35|3425"
+#ADDI Level_Requirements "6|40|5138"
+#ADDI Level_Requirements "7|45|7707"
+#ADDI Level_Requirements "8|50|11561"
+#ADDI Level_Requirements "9|55|17341"
+#ADDI Level_Requirements "10|60|26012"
+#ADDI Level_Requirements "11|65|39018"
+#ADDI Level_Requirements "12|70|58527"
+#ADDI Level_Requirements "13|75|87791"
+#ADDI Level_Requirements "14|80|131687"
+#ADDI Level_Requirements "15|85|197530"
+#ADDI Level_Requirements "16|90|296296"
+#ADDI Level_Requirements "17|95|444444"
+#ADDI Level_Requirements "18|97|666666"
+#ADDI Level_Requirements "19|99|1000000"
+#ADDI Level_Requirements "20|100|1500000"
+#ADDI Level_Requirements "21|101|2250000"
+#ADDI Level_Requirements "22|102|3375000"
+#ADDI Level_Requirements "23|103|5062500"
+#ADDI Level_Requirements "24|104|7593750"
+#ADDI Level_Requirements "25|105|11390625"
+
+#TR {*asks*: Are you sure you want to become a warrior?} {y} Tools|TrainMe|Settings
+#TR {*asks*: Are you sure you want to join my profession?} {y} Tools|TrainMe|Settings
+#TR {*welcomes you into the warrior profession!} {spar} Tools|TrainMe|Settings
+#TR {*says*: Very well then.} {spar} Tools|TrainMe|Settings
+#TR {Editing description.} {~.;#WAIT 1000;advance} Tools|TrainMe|Settings
+#TR {Your balance is only} {withdraw all} Tools|TrainMe|Settings
+
+
+//Requires Level quest
+#TR {*says*: I'm not sure if you have earned the right to advance} {#VAR TrainMe_CanLevel {0} {} VAR;ActionNext} Tools|TrainMe|Settings
+#TR {*says*: You should seek out the council of Elrond.  He may} {#VAR TrainMe_CanLevel {0} {} VAR;ActionNext} Tools|TrainMe|Settings
+#TR {*says*: I don't have the authority to promote you any further} {#VAR TrainMe_CanLevel {0} {} VAR;ActionNext} Tools|TrainMe|Settings
+#TR {Rabban says*: You're ready for your next rank, but there's a bit of} {#VAR TrainMe_CanLevel {0} {} VAR;ActionNext} Tools|TrainMe|Settings
+#TR {*says*: Not enough questing done.} {#VAR TrainMe_CanLevel {0} {} VAR;ActionNext} Tools|TrainMe|Settings
+
+//Can't level
+#TR {says*: I do not know the needs of your profession.} {#VAR TrainMe_CanLevel {0} {} VAR;score;gold;ActionNext} Tools|TrainMe|Settings
+#TR {*says*: Not enough experience.} {#VAR TrainMe_CanLevel {0} {} VAR;score;gold;ActionNext} Tools|TrainMe|Settings
+#TR {*says*: Average stats too low.} {#VAR TrainMe_CanLevel {0} {} VAR;ActionNext} Tools|TrainMe|Settings
+#TR {You are now level %d.} {#VAR TrainMe_CanLevel {0} {} VAR;#IF (%ismember(%roomid,"savareth|scalus")) {spar} {advance}} Tools|TrainMe|Settings
+#TR {* says*: That would cost %d gold, which you don't have.} {#VAR TrainMe_CanTrain {0} {} VAR;score;gold;ActionNext} Tools|TrainMe|Settings
+#TR {Rabban shakes his head and says*: You are trying to get ahead too fast.} {ActionClear;ActionAdd "QuestComplete";ActionAdd "TrainMe_Move_from_Rabban";ActionNext} Tools|TrainMe|Settings
+
+
+#TR {*says*: You must first set a description with the 'describe' command.} {describe} Tools|TrainMe|Settings
+#TR {Editing description.} {~.;#WAIT 1000;advance} Tools|TrainMe|Settings
+#TR {*says*: You must first read our rules by typing: 'help rules'.} {help rules} Tools|TrainMe|Settings
+#TR TrainMe_More {--More--} {q;advance} Tools|TrainMe|Settings
+#TR {*says*: You must first read our comm policy by typing: 'help comm_policy'.} {help comm_policy} Tools|TrainMe|Settings
+
+#TR {~[ You have completed a quest:%s*%s~]} {QuestOff TrainMe} Tools|TrainMe|Settings
+
+#CLASS 0
