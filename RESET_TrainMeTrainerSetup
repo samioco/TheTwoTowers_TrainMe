@@ -1,0 +1,32 @@
+#CLASS 0
+#AL TrainMe_MoveTo_Rabban {QuestOn TrainMe
+SysMsg Executing: TrainMe_MoveTo_Rabban
+ActionAdd "#WALK rabban;ActionNext"
+#IF (%ismember(%roomid,"rabban|tarwell_bottom")) {ActionNext} {ActionAdd "#WALK tarwell";MoveMe_To_FH}
+} Tools|TrainMe|EXE
+
+#AL TrainMe_MoveFrom_Rabban {QuestOn TrainMe;SysMsg Executing: TrainMe_MoveFrom_Rabban;#IF (%ismember(%roomid,"rabban|tarwell_bottom|tarwell")) {#WALK tarwell} {ActionNext}} Tools|TrainMe|EXE
+
+#AL TrainMe_SavarethBucket {
+#IF (%ismember("savareth",@TrainMe_TrainerList)) {ActionAdd "#WALK Loth;#WALK savareth;get bucket;#WALK savareth_brook;get bucket;draw water from stream;#WALK savareth;do give bucket to savareth,drop all bucket;ActionNext"
+ActionAdd "MoveMe_To_Loth"}
+//ActionAdd "gnb;deposit all;ActionNext"
+} Tools|TrainMe|EXE
+
+
+#TR {The bucket must be carried!} {#VAR TrainMe_CanTrain {0} {} VAR;score;gold;ActionNext} Tools|TrainMe|Settings
+#TR {Savareth says*: Ah, I'd love to spar with you, but my wounds need}  {#VAR TrainMe_CanTrain {0} {} VAR;score;gold;ActionNext} Tools|TrainMe|Settings
+
+//Tarz well positioning
+#TR TrainMe_tarwell_bottom {You reach the bottom of the well shaft} {#WAIT 1000;ActionNext} Tools|TrainMe|Settings
+#TR TrainMe_tarwell_top {{"You reach the top of the well shaft|your cLothes and join the traffic."}} {ActionNext} Tools|TrainMe|Settings
+#TR {You are too tired to climb down the well.} {rest on;#UNT Alarm_rest;#ALA Alarm_rest {+30} {do move mat,slide board,lower rope,climb down} Tools|TrainMe|Settings} Tools|TrainMe|Settings
+#TR {You are too tired for that!} {rest on;#UNT Alarm_rest;#ALA "Alarm_rest" {+30} {climb up} Tools|TrainMe|Settings} Tools|TrainMe|Settings
+#TR {There is no rope to climb here. You will have to dig your way out instead.} {dig out} Tools|TrainMe|Settings
+#TR {{"You manage to reveal a narrow tunnel!|Someone's already dug a tunnel out."}} {tunnel} Tools|TrainMe|Settings
+#TR {A cramped hollow in the sand} {dig up} Tools|TrainMe|Settings
+#TR {You'll surely need a free hand to climb down!} {sss;climb down} Tools|TrainMe|Settings
+//#TR {There's someone climbing up the rope!}
+#TR {climbs out of the well.} {#IF (%ismember(%roomid,"tarwell|tarwell_top")) {climb down}} Tools|TrainMe|Settings
+
+#CLASS 0

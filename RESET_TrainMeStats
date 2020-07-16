@@ -1,0 +1,177 @@
+#CLASS 0
+#AL TrainMe_Stats {
+//TrainMe_INIT
+//#VAR TrainMe_UsableGold {%number(10000)} {} VAR
+$stat="";$display="";$verbose=%0;#IF (%0="verbose") {$verbose=%number(1)} {$verbose=%number(0)}
+#FORALL @TrainMe_TrainableStats {
+  #VAR TrainMe_StatToTrain {%i} {} VAR
+  #VAR TrainMe_StatValue {%number(@{%concat(@MyName,"_",%i)})} {} VAR
+  TrainMe_Stats_CostLookup @TrainMe_StatValue
+  TrainMe_Stats_Exceptions
+  TrainMe_Stats_CheckConditions $verbose
+  #VAR TrainMe_GoldNeeded {@TrainMe_CostTotal} {} VAR
+}
+#IF (@TrainMe_Stack) {#VAR TrainMe_CanTrain {1} {} VAR}
+} Tools|TrainMe|EXE
+
+
+#AL TrainMe_Stats_CheckConditions {
+$verbose = %number(%0)
+#VAR TrainMe_TrainCount {0} {} VAR
+#VAR TrainMe_TrainCost {0} {} VAR
+#IF ((%number(@TrainMe_StatValue)<%number(@TrainMe_StatCap)) AND (%number(@TrainMe_UsableGold)>%number(@TrainMe_StatCost))) {
+  TrainMe_Stats_CalculateStatCost @TrainMe_StatValue
+  TrainMe_Stats_AssignTrainer
+  TrainMe_Stats_VerboseDisplay $verbose
+  TrainMe_Stats_AddToStack
+}
+} Tools|TrainMe|EXE
+
+
+#AL TrainMe_Stats_VerboseDisplay {$verbose = %number(%0)
+$display=%concat("StatToTrain: ",@TrainMe_StatToTrain,", StatCap: ",@TrainMe_StatCap,", Current: ",@TrainMe_StatValue,", StatCost: ",@TrainMe_StatCost,", UsableGold: ",@TrainMe_UsableGold)
+#IF ($verbose) {SysMsg $display}
+$display=%concat("StatToTrain: ",@TrainMe_TrainCount," ",@TrainMe_StatToTrain,", Cost: ",@TrainMe_TrainCost,", RunningCost: ",@TrainMe_CostTotal,", LeftoverGold: ",@TrainMe_UsableGold)
+#IF ($verbose) {SysMsg $display;SysMsg { }}
+} Tools|TrainMe|EXE
+
+#AL TrainMe_Stats_AssignTrainer {
+#SW ((@TrainMe_StatToTrain=agility) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {rabban} {} VAR
+} ((@TrainMe_StatToTrain=agility) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {batlin} {} VAR
+} ((@TrainMe_StatToTrain=agility) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {osgtrain} {} VAR
+} ((@TrainMe_StatToTrain=agility) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {dawyin} {} VAR
+} ((@TrainMe_StatToTrain=constitution) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {rabban} {} VAR
+} ((@TrainMe_StatToTrain=constitution) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {scalus} {} VAR
+} ((@TrainMe_StatToTrain=constitution) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {osgtrain} {} VAR
+} ((@TrainMe_StatToTrain=constitution) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {savareth} {} VAR
+} ((@TrainMe_StatToTrain=strength) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {rabban} {} VAR
+} ((@TrainMe_StatToTrain=strength) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {scalus} {} VAR
+} ((@TrainMe_StatToTrain=strength) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {osgtrain} {} VAR
+} ((@TrainMe_StatToTrain=strength) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {savareth} {} VAR
+} ((@TrainMe_StatToTrain=coordination) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {rabban} {} VAR
+} ((@TrainMe_StatToTrain=coordination) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {batlin} {} VAR
+} ((@TrainMe_StatToTrain=coordination) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {osgtrain} {} VAR
+} ((@TrainMe_StatToTrain=coordination) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {savareth} {} VAR
+} ((@TrainMe_StatToTrain=tactics) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {tavtrain} {} VAR
+} ((@TrainMe_StatToTrain=tactics) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {scalus} {} VAR
+} ((@TrainMe_StatToTrain=tactics) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {osgtrain} {} VAR
+} ((@TrainMe_StatToTrain=tactics) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {savareth} {} VAR
+} ((@TrainMe_StatToTrain=charisma) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {tarauc} {} VAR
+} ((@TrainMe_StatToTrain=charisma) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {aravir} {} VAR
+} ((@TrainMe_StatToTrain=charisma) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {saru} {} VAR
+} ((@TrainMe_StatToTrain=charisma) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {saru} {} VAR
+} ((@TrainMe_StatToTrain=defense) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {rabban} {} VAR
+} ((@TrainMe_StatToTrain=defense) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {treebeard} {} VAR
+} ((@TrainMe_StatToTrain=defense) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {osgtrain} {} VAR
+} ((@TrainMe_StatToTrain=defense) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {treebeard} {} VAR
+} ((@TrainMe_StatToTrain=intelligence) AND (@TrainMe_StatValue<=45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {tarauc} {} VAR
+} ((@TrainMe_StatToTrain=intelligence) AND (@TrainMe_StatValue<=45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {rivtrain} {} VAR
+} ((@TrainMe_StatToTrain=intelligence) AND (@TrainMe_StatValue>45) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {osgtrain} {} VAR
+} ((@TrainMe_StatToTrain=intelligence) AND (@TrainMe_StatValue>45) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {dawyin} {} VAR
+} ((@TrainMe_StatToTrain=awareness) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {corthief} {} VAR
+} ((@TrainMe_StatToTrain=awareness) AND (@TrainMe_StatValue<=90) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {dawyin} {} VAR
+} ((@TrainMe_StatToTrain=awareness) AND (@TrainMe_StatValue>90) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {saru} {} VAR
+} ((@TrainMe_StatToTrain=riding) AND (@MyFaction=ER)) {#VAR TrainMe_Trainer {outstable} {} VAR
+} ((@TrainMe_StatToTrain=riding) AND (@MyFaction=FR)) {#VAR TrainMe_Trainer {edorider} {} VAR
+}
+} Tools|TrainMe|EXE
+
+#AL TrainMe_Stats_AddToStack {
+$trainme_count = %number(0);$trainme_action=""
+#VAR TrainMe_Action {} {} VAR
+#IF (@TrainMe_TrainCount>0) {
+  //Split train strings into sets of 10.
+  //i.e. '22train strength' becomes '10train strength,10train strength,2train strength'
+  #WHILE (@TrainMe_TrainCount>10) {
+    #ADD TrainMe_TrainCount -10
+    #VAR TrainMe_Action {%concat(@TrainMe_Action,";10train ",@TrainMe_StatToTrain)} {} VAR
+  }
+}
+$trainme_count = %number(@TrainMe_TrainCount)
+//Avoid possibility of '0train' or negative train string
+#IF ($trainme_count<%number(1)) {$trainme_count=""}
+#VAR TrainMe_Action {%concat(@TrainMe_Action,";",$trainme_count,"train ",@TrainMe_StatToTrain)} {} VAR
+//Remove all leading ";" from string
+#WHILE (%left(@TrainMe_Action,1)=";") {#VAR TrainMe_Action {%delete(@TrainMe_Action,1,1)} {} VAR}
+
+//Add executable string to stack variable
+#ADDI TrainMe_Stack %concat(@TrainMe_Trainer,"|",@TrainMe_Action,";score")
+} Tools|TrainMe|EXE
+
+
+
+#AL TrainMe_Stats_CostLookup {
+$stat = %number(%0)
+#SW (($stat<10) AND (@TrainMe_StatToTrain="combat arms") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {9} {} VAR
+} (($stat<10) AND (@TrainMe_StatToTrain="tactics")) {#VAR TrainMe_StatCost {10} {} VAR
+} (($stat<10) AND (@TrainMe_StatToTrain="awareness") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {9} {} VAR
+} ($stat<10) {#VAR TrainMe_StatCost {9} {} VAR
+} (($stat<20) AND (@TrainMe_StatToTrain="tactics")) {#VAR TrainMe_StatCost {26} {} VAR
+} ($stat<20) {#VAR TrainMe_StatCost {12} {} VAR
+} (($stat<30) AND (@TrainMe_StatToTrain="tactics")) {#VAR TrainMe_StatCost {42} {} VAR
+} (($stat<30) AND (@TrainMe_StatToTrain="blocking") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {25} {} VAR
+} (($stat<30) AND (@TrainMe_StatToTrain="defense") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {27} {} VAR
+} ($stat<30) {#VAR TrainMe_StatCost {27} {} VAR
+} (($stat<40) AND (@TrainMe_StatToTrain="tactics")) {#VAR TrainMe_StatCost {67} {} VAR
+} (($stat<40) AND (@TrainMe_StatToTrain="blocking") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {40} {} VAR
+} (($stat<40) AND (@TrainMe_StatToTrain="defense") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {44} {} VAR
+} ($stat<40) {#VAR TrainMe_StatCost {43} {} VAR
+} (($stat<50) AND (@TrainMe_StatToTrain="tactics")) {#VAR TrainMe_StatCost {108} {} VAR
+} (($stat<50) AND (@TrainMe_StatToTrain="blocking") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {65} {} VAR
+} (($stat<50) AND (@TrainMe_StatToTrain="battle instincts") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {68} {} VAR
+} (($stat<50) AND (@TrainMe_StatToTrain="defense") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {71} {} VAR
+} ($stat<50) {#VAR TrainMe_StatCost {69} {} VAR
+} (($stat<60) AND (@TrainMe_StatToTrain="battle instincts") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {110} {} VAR
+} (($stat<60) AND (@TrainMe_StatToTrain="blocking") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {106} {} VAR
+} (($stat<60) AND (@TrainMe_StatToTrain="attack") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {108} {} VAR
+} (($stat<60) AND (@TrainMe_StatToTrain="aim") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {99} {} VAR
+} (($stat<60) AND (@TrainMe_StatToTrain="defense") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {115} {} VAR
+} ($stat<60) {#VAR TrainMe_StatCost {112} {} VAR
+} (($stat<70) AND (@TrainMe_StatToTrain="battle instincts") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {180} {} VAR
+} (($stat<70) AND (@TrainMe_StatToTrain="blocking") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {172} {} VAR
+} (($stat<70) AND (@TrainMe_StatToTrain="defense") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {187} {} VAR
+} ($stat<70) {#VAR TrainMe_StatCost {182} {} VAR
+} (($stat<80) AND (@TrainMe_StatToTrain="blocking") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {280} {} VAR
+} (($stat<80) AND (@TrainMe_StatToTrain="riding")) {#VAR TrainMe_StatCost {354} {} VAR
+} (($stat<80) AND (@TrainMe_StatToTrain="defense") AND (@MyFaction="FR")) {#VAR TrainMe_StatCost {303} {} VAR
+} ($stat<80) {#VAR TrainMe_StatCost {295} {} VAR
+} ($stat<90) {#VAR TrainMe_StatCost {479} {} VAR
+} (($stat<100) AND (@TrainMe_StatToTrain="defense")) {#VAR TrainMe_StatCost {801} {} VAR
+} (($stat<100) AND (@TrainMe_StatToTrain="awareness")) {#VAR TrainMe_StatCost {1104} {} VAR
+} ($stat<100) {#VAR TrainMe_StatCost {778} {} VAR
+} {#VAR TrainMe_StatCost {1000000} {} VAR
+}
+#VAR TrainMe_StatCost {%number(@TrainMe_StatCost)} {} VAR
+} Tools|TrainMe|EXE
+
+#AL TrainMe_Stats_CalculateStatCost {
+$stat = %number(%0)
+#IF ($stat+1<@TrainMe_StatCap) {
+  #LOOP $stat+1,@TrainMe_StatCap {
+    TrainMe_Stats_CostLookup $stat
+    //Continue looping/calculating stat costs until available gold is exhausted
+    #IF (@TrainMe_UsableGold>@TrainMe_StatCost) {
+      #ADD TrainMe_UsableGold -@TrainMe_StatCost
+      #ADD TrainMe_TrainCount 1
+      #ADD TrainMe_TrainCost @TrainMe_StatCost
+      #ADD TrainMe_CostTotal @TrainMe_StatCost
+      #ADD $stat 1
+    } {#BREAK}
+  }
+}
+} Tools|TrainMe|EXE
+
+#AL TrainMe_Stats_Exceptions {
+#IF ((%ismember(@TrainMe_StatToTrain,"defense|blocking|battle instincts|awareness|riding")) AND (@MyAverageStats<=45)) {#BREAK}
+
+//Evil Race warriors require Tactics skill for Level 5 Quest
+#IF ((@TrainMe_StatToTrain="tactics") AND ((@MyFaction!=ER) OR (@MyProf!="warrior") OR (@MyTrueLevel>4) OR (@{%concat(@MyName,"_Tactics")}>=45))) {#BREAK}
+
+//Only train blocking if warrior OR blocking skill secondary <60
+#IF ((@TrainMe_StatToTrain="blocking") AND ((@MyProf!="warrior") OR (@{%concat(@MyName,"_Blocking")}>=60))) {#BREAK}
+
+//Only train battle instincts if warrior OR blocking skill secondary <60
+#IF ((@TrainMe_StatToTrain="battle instincts") AND ((@MyProf!="warrior") OR (@{%concat(@MyName,"_Battle_Instincts")}>=60))) {#BREAK}
+} Tools|TrainMe|EXE
+
+#CLASS 0
