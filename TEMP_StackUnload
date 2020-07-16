@@ -1,0 +1,53 @@
+$stack_item="";$trainer="";$action="";$action_exe=""
+
+//Grab last/top item off of stack
+//Add them into the @ACTION_QUEUE (in reverse reverse (forward) order,
+//to preserve priority, when they are popped off of the @ACTION_QUEUE)
+#LOOP %numitems(@TrainMe_Stack),1 {
+  //Each item is a list of 2 items
+  //item1: $trainer, item2: $action
+  $stack_item = %item(@TrainMe_Stack,%i)
+  $trainer = %item($stack_item,1)
+  $action = %item($stack_item,2)
+  //$trainer=%item(%item(@TrainMe_Stack,%numitems(@TrainMe_Stack)),1)
+  //$action=%item(%item(@TrainMe_Stack,%numitems(@TrainMe_Stack)),2)
+  #ADDI TrainMe_TrainerList $trainer
+
+
+  //Prep Trainer Positioning for Rabban Well
+  //#IF ($trainer="rabban") {action_add "MoveMe_From_Rabban"}
+
+  //While at trainer, unload all stack items requiring this trainer
+  //For each Stack item, check if item1 (trainer) is rabban
+  //If match, add item2 (the action) into @ACTION_QUEUE and delete it from stack
+  #LOOP %i,1 {
+    $stack_item = %item(@TrainMe_Stack,%j)
+    #IF (%item($stack_item,1)=$trainer) {
+      $action=%item($stack_item,2)
+      //Add the trainer action to the top of the Action stack
+      $action_exe = %concat("#WALK ",$trainer,";",$action,";action_next")
+      #ECHO Stack to Action: $action_exe
+      action_add $action_exe
+      //#DELN TrainMe_Stack  %ismember(%i,@TrainMe_Stack)
+    }
+  }
+//Add the trainer action to the top of the Action stack
+//#IF (($action) AND ($trainer)) {action_add %concat("#WALK ",$trainer,";",$action,";action_next")}
+
+//If $trainer="rabban" then add to_Rabban positioning to top of Action stack
+//#IF ($trainer="rabban") {action_add "TrainMe_MoveTo_Rabban"}
+  #IF ($trainer="rabban") {action_add "MoveMe_To_Rabban"}
+
+//Grid Zone Positioning
+  #SW (%ismember($trainer,"dawyin|savareth|radagast|saru|treebeard|osgtrain|edoarch|edorider|corthief|outstable|kadthief|kadass|treebeard")) {
+    action_add "MoveMe_To_Arda"
+  } (%ismember($trainer,"rabban|tavtrain|tarauc")) {action_add "MoveMe_To_FH"}
+//Grid Positioning Bug? action list can only accomodate unique actions.
+//Multiple trainers requiring multiple grid moves of same type may cause errors
+
+//Remove last/top item from stack
+//#DELN TrainMe_Stack %numitems(@TrainMe_Stack)
+
+}
+//CLOSE: #WHILE %numitems(@TrainMe_Stack) {
+//CLOSE: TrainMe_Stack LOOP
