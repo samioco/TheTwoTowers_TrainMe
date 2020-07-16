@@ -1,0 +1,67 @@
+#CLASS 0
+#AL TrainMe_INIT {
+MyProfileVars
+#VAR TrainMe_StatCap {%number(@Mystat_cap)} {} VAR
+#VAR TrainMe_UsableGold {%number(@MyUsableGold)} {} VAR
+//#VAR TrainMe_UsableGold {%number(10000)} {} VAR
+#VAR TrainMe_Stack {} {} VAR
+#VAR TrainMe_Trainer_List {} {} VAR
+#VAR TrainMe_TrainerList {} {} VAR
+#VAR TrainMe_Stats_to_Train {} {} VAR
+#VAR TrainMe_CanLevel {} {} VAR
+#VAR TrainMe_CanTrain {} {} VAR
+#VAR TrainMe_NextLevel_Exp {} {} VAR
+#VAR TrainMe_NextLevel_AvgStats {} {} VAR
+#VAR TrainMe_GoldNeeded {} {} VAR
+#VAR TrainMe_Savareth_bucket {} {} VAR
+#VAR TrainMe_StatValue {} {} VAR
+#VAR TrainMe_CostTotal {} {} VAR
+#VAR TrainMe_Trainer {} {} VAR
+#VAR TrainMe_Action {} {} VAR
+#VAR TrainMe_TrainCount {} {} VAR
+#VAR TrainMe_TrainCost {} {} VAR
+#VAR TrainMe_TrainableStats {"agility|constitution|coordination|strength|charisma|tactics|defense|blocking|battle instincts|intelligence|awareness|riding"} {} VAR
+
+#VAR TrainMe_Trainers {} {} VAR
+#ADDI TrainMe_Trainers "rabban"|"strength|agility|coordination|constitution|defense|attack|aim|dodge|lethal precision|deception|assassination"
+#ADDI TrainMe_Trainers "tarauc"|"charisma|intelligence"
+#ADDI TrainMe_Trainers "tavtrain"|"strength|constitution|tactics|blocking|battle instincts|combat arms"
+#ADDI TrainMe_Trainers "savareth"|"strength|constitution|coordination|tactics|blocking|battle instincts|combat arms"
+#ADDI TrainMe_Trainers "dawyin"|"agility|intelligence"
+#ADDI TrainMe_Trainers "scalus"|"strength|constitution"
+#ADDI TrainMe_Trainers "batlin"|"agility|coordination|nimbleness|stealth|lockpicking|theft"
+#ADDI TrainMe_Trainers "aravir"|"charisma"
+#ADDI TrainMe_Trainers "rivtrain"|"intelligence"
+#ADDI TrainMe_Trainers "saru"|"intelligence|charisma|nimbleness"
+#ADDI TrainMe_Trainers "radagast"|"charisma|intelligence|awareness|nature's lore|resist magic|riding|dodge|wilderness|intuition|concentration"
+#ADDI TrainMe_Trainers "treebeard"|"charisma|defense"
+
+#VAR Level_Requirements {} {} VAR
+#ADDI Level_Requirements "1|20|0"
+#ADDI Level_Requirements "2|20|500"
+#ADDI Level_Requirements "3|25|1522"
+#ADDI Level_Requirements "4|30|2283"
+#ADDI Level_Requirements "5|35|3425"
+#ADDI Level_Requirements "6|40|5138"
+#ADDI Level_Requirements "7|45|7707"
+#ADDI Level_Requirements "8|50|11561"
+#ADDI Level_Requirements "9|55|17341"
+#ADDI Level_Requirements "10|60|26012"
+#ADDI Level_Requirements "11|65|39018"
+#ADDI Level_Requirements "12|70|58527"
+#ADDI Level_Requirements "13|75|87791"
+#ADDI Level_Requirements "14|80|131687"
+#ADDI Level_Requirements "15|85|197530"
+#ADDI Level_Requirements "16|90|296296"
+#ADDI Level_Requirements "17|95|444444"
+#ADDI Level_Requirements "18|97|666666"
+#ADDI Level_Requirements "19|99|1000000"
+#ADDI Level_Requirements "20|100|1500000"
+#ADDI Level_Requirements "21|101|2250000"
+#ADDI Level_Requirements "22|102|3375000"
+#ADDI Level_Requirements "23|103|5062500"
+#ADDI Level_Requirements "24|104|7593750"
+#ADDI Level_Requirements "25|105|11390625"
+} Tools|TrainMe|EXE
+TrainMe_INIT
+#CLASS 0
