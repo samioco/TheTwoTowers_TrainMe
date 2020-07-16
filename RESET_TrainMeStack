@@ -1,0 +1,110 @@
+#CLASS 0
+#AL TrainMe_Stack_LevelUp {
+//If CanLevel, Queue TrainMe to run/calculate again after Level-Up
+//There is a chance the character can advance more than 1 level
+//Reason: Leveling up increases the stat cap, affecting calculation of trainable stats
+$action=advance;$trainer=""
+#IF (@TrainMe_CanLevel) {
+//format: 2 element list <$trainer|executable>
+  #SW ((@MyFaction=FR) AND (@MyProf=warrior) AND (@Mystat_cap<=45)) {$trainer=scalus;$action=spar
+  } ((@MyFaction=FR) AND (@MyProf=warrior) AND (@Mystat_cap>45)) {$trainer=savareth;$action=spar
+  } ((@MyFaction=FR) AND (@MyProf=thief)) {$trainer=batlin;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=wizard) AND (@Mystat_cap<=45)) {$trainer=merlac;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=wizard) AND (@Mystat_cap>45)) {$trainer=dawyin;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=ranger) AND (@Mystat_cap<=45)) {$trainer=aravir;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=ranger) AND (@Mystat_cap>45)) {$trainer=radagast;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=rider) AND (@Mystat_cap<=45)) {$trainer=adrider;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=rider) AND (@Mystat_cap>45)) {$trainer=edorider;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=archer)) {$trainer=edoarch;$action=study
+  } ((@MyFaction=ER) AND (@MyProf=warrior) AND (@Mystat_cap<=45)) {$trainer=tavtrain;$action=spar
+  } ((@MyFaction=ER) AND (@MyProf=warrior) AND (@Mystat_cap>45)) {$trainer=osgtrain;$action=advance
+  } ((@MyFaction=ER) AND (@MyProf=necromancer) AND (@Mystat_cap<=45)) {$trainer=azraktrain;$action=study
+  } ((@MyFaction=ER) AND (@MyProf=necromancer) AND (@Mystat_cap>45)) {$trainer=necrotrain;$action=study
+  } ((@MyFaction=ER) AND (@MyProf=sniffer) AND (@Mystat_cap<=45)) {$trainer="";$action=study
+  } ((@MyFaction=ER) AND (@MyProf=sniffer) AND (@Mystat_cap>45)) {$trainer=dgtrain;$action=study
+  } ((@MyFaction=ER) AND (@MyProf=rider) AND (@Mystat_cap<=45)) {$trainer="";$action=study
+  } ((@MyFaction=ER) AND (@MyProf=rider) AND (@Mystat_cap>45)) {$trainer=outstable;$action=study
+  } ((@MyFaction=ER) AND (@MyProf=archer) AND (@Mystat_cap<=45)) {$trainer=turarch;$action=study
+  } ((@MyFaction=ER) AND (@MyProf=archer) AND (@Mystat_cap>45)) {$trainer=jorgul;$action=study
+  } ((@MyFaction=FR) AND (@MyProf=civilian)) {$trainer=hobciv;$action=advance
+  } ((@MyFaction=ER) AND (@MyProf=minion)) {$trainer=tavtrain;$action=spar
+  } (@MyProf=assassin) {$trainer=calad;$action=study
+  } ((@MyFaction=FR) AND (@Mystat_cap<=45)) {$trainer=scalus;$action=spar
+  } ((@MyFaction=FR) AND (@Mystat_cap>45)) {$trainer=saru;$action=advance
+  } ((@MyFaction=ER) AND (@Mystat_cap<=45)) {$trainer=rabban;$action=advance
+  } ((@MyFaction=ER) AND (@Mystat_cap>45)) {$trainer=osgtrain;$action=advance
+  }
+
+  //#VAR GrinderLevelUp_Trainer {$trainer} {} VAR
+  //#VAR GrinderLevelUp_Action {$action} {} VAR
+  #ADDI TrainMe_Trainer_List $trainer
+
+  $string = %concat($trainer,"|",$action,";score")
+  #VAR TrainMe_Stack {} {} VAR
+  //#ADDI TrainMe_Stack "TrainMe"
+  #ADDI TrainMe_Stack $string
+}
+} Tools|TrainMe|EXE
+
+
+
+#AL TrainMe_Stack_Unload {
+$stack_item="";$trainer="";$action="";$Actionexe=""
+
+//Grab last/top item off of stack
+//Add them into the @ActionQueue (in reverse reverse (forward) order,
+//to preserve priority, when they are popped off of the @ActionQueue)
+#LOOP %numitems(@TrainMe_Stack),1 {
+  //Each item is a list of 2 items
+  //item1: $trainer, item2: $action
+  $stack_item = %item(@TrainMe_Stack,%i)
+  $trainer = %item($stack_item,1)
+  $action = %item($stack_item,2)
+  //$trainer=%item(%item(@TrainMe_Stack,%numitems(@TrainMe_Stack)),1)
+  //$action=%item(%item(@TrainMe_Stack,%numitems(@TrainMe_Stack)),2)
+  #ADDI TrainMe_TrainerList $trainer
+
+
+  //Prep Trainer Positioning for Rabban Well
+  #IF ($trainer="rabban") {ActionAdd "MoveMe_From_Rabban"}
+
+  //While at trainer, unload all stack items requiring this trainer
+  //For each Stack item, check if item1 (trainer) is rabban
+  //If match, add item2 (the action) into @ActionQueue and delete it from stack
+  #LOOP %i,1 {
+    $stack_item = %item(@TrainMe_Stack,%j)
+    #IF (%item($stack_item,1)=$trainer) {
+      $action=%item($stack_item,2)
+      //Add the trainer action to the top of the Action stack
+      //Do not append ActionNext if advancing level (triggers will handle it)
+      #IF (%ismember($action,"spar|study|advance")) {$ActionEXE = %concat("#WALK ",$trainer,";",$action)
+      } {$ActionEXE = %concat("#WALK ",$trainer,";",$action,";ActionNext")}
+      #ECHO Stack to Action: $ActionEXE
+      ActionAdd $ActionEXE
+      //#DELN TrainMe_Stack  %ismember(%i,@TrainMe_Stack)
+    }
+  }
+//Add the trainer action to the top of the Action stack
+//#IF (($action) AND ($trainer)) {ActionAdd %concat("#WALK ",$trainer,";",$action,";ActionNext")}
+
+//If $trainer="rabban" then add to_Rabban positioning to top of Action stack
+//#IF ($trainer="rabban") {ActionAdd "TrainMe_MoveTo_Rabban"}
+  #IF ($trainer="rabban") {ActionAdd "MoveMe_To_Rabban"}
+
+//Grid Zone Positioning
+  #SW (%ismember($trainer,"dawyin|savareth|radagast|saru|treebeard|osgtrain|edoarch|edorider|corthief|outstable|kadthief|kadass|treebeard")) {
+    ActionAdd "MoveMe_To_Arda"
+  } (%ismember($trainer,"rabban|tavtrain|tarauc")) {ActionAdd "MoveMe_To_FH"}
+//Grid Positioning Bug? action list can only accomodate unique actions.
+//Multiple trainers requiring multiple grid moves of same type may cause errors
+
+//Remove last/top item from stack
+//#DELN TrainMe_Stack %numitems(@TrainMe_Stack)
+
+}
+//CLOSE: #WHILE %numitems(@TrainMe_Stack) {
+//CLOSE: TrainMe_Stack LOOP
+
+} Tools|TrainMe|EXE
+
+#CLASS 0
