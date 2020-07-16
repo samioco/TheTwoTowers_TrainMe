@@ -1,0 +1,12 @@
+#CLASS 0
+RESET_TrainMeCheck
+RESET_TrainMeStats
+RESET_TrainMeDisplay
+RESET_TrainMeEXE
+RESET_TrainMeINIT
+RESET_TrainMeStack
+RESET_TrainMeStats
+RESET_TrainMeTrainerSetup
+RESET_TrainMeSettings
+ClassOff TrainMe
+#CLASS 0
